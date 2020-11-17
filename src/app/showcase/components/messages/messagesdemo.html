@@ -30,18 +30,18 @@
 
         <h5>Inline Message</h5>
         <p>p-message component is used to display inline messages mostly within forms.</p>
-        <p-message severity="info" text="Message Content"></p-message>
-        <p-message severity="success" text="Message Content"></p-message>  
-        <p-message severity="warn" text="Message Content"></p-message>  
+        <p-message severity="info" text="Message Content" styleClass="p-mr-2"></p-message>
+        <p-message severity="success" text="Message Content" styleClass="p-mr-2"></p-message>  
+        <p-message severity="warn" text="Message Content" styleClass="p-mr-2"></p-message>  
         <p-message severity="error" text="Message Content"></p-message>
         
         <div class="p-mt-4">
-            <input type="text" pInputText placeholder="Username" class="ng-dirty ng-invalid p-invalid">
+            <input type="text" pInputText placeholder="Username" class="ng-dirty ng-invalid p-mr-2">
             <p-message severity="error" text="Field is required"></p-message>
         </div>
         
         <div class="p-mt-4">
-            <input type="text" pInputText placeholder="Email" class="ng-dirty ng-invalid p-invalid">
+            <input type="text" pInputText placeholder="Email" class="ng-dirty ng-invalid p-mr-2">
             <p-message severity="error"></p-message>
         </div>
 
@@ -59,7 +59,7 @@
         <p-tabPanel header="Documentation">
             <h5>Import</h5>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 import &#123;MessagesModule&#125; from 'primeng/messages';
 import &#123;MessageModule&#125; from 'primeng/message';
 </app-code>
@@ -69,21 +69,21 @@ import &#123;MessageModule&#125; from 'primeng/message';
                 Messages to display can either be defined using the value property which should an array of Message instances or using 
                a MessageService are defined using the value property which should an array of Message instances.</p>
 
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-messages [(value)]="msgs"&gt;&lt;/p-messages&gt;
 </app-code>
             
             <h5>Message Array</h5>
             <p>A binding to the value property is required to provide messages to the component.</p>
 
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-messages [(value)]="msgs"&gt;&lt;/p-messages&gt;
 
 &lt;button type="button" (click)="show()"&gt;Show&lt;/button&gt;
 &lt;button type="button" (click)="clear()"&gt;Hide&lt;/button&gt;
 </app-code>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 show() &#123;
     this.msgs.push(&#123;severity:'info', summary:'Info Message', detail:'PrimeNG rocks'&#125;);
 &#125;
@@ -99,11 +99,11 @@ hide() &#123;
             so that descandant components can have it injected. If there are multiple message components having the same message service, you may use key property of the component
             to match the key of the message to implement scoping.</p>
             
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 import &#123;MessageService&#125; from 'primeng/api';
 </app-code>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 import &#123;Component&#125; from '@angular/core';
 import &#123;Message&#125; from 'primeng//api';
 import &#123;MessageService&#125; from 'primeng/api';
@@ -132,13 +132,13 @@ import &#123;MessageService&#125; from 'primeng/api';
 
             <h5>Closable</h5>
             <p>Messages are closable by default resulting in a close icon being displayed on top right corner.</p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-messages [(value)]="msgs"&gt;&lt;/p-messages&gt;
 </app-code>
 
             <p>In order to disable closable messages, set <i>closable</i> to false. Note that in this case two-way binding is not necessary as the component
             does not need to update its value.</p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-messages severity="info"&gt;
     &lt;ng-template pTemplate&gt;
         &lt;img src="assets/showcase/images/demo/organization/walter.jpg" width="32" /&gt;
@@ -160,7 +160,7 @@ import &#123;MessageService&#125; from 'primeng/api';
             <p>Alternative way to provide the content for the messages is templating. In this case value property and message service is ignored and only static
                 is displayed.
             </p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-messages severity="info"&gt;
     &lt;ng-template pTemplate&gt;
         &lt;img src="assets/showcase/images/primeng.svg" width="32" /&gt;
@@ -171,7 +171,7 @@ import &#123;MessageService&#125; from 'primeng/api';
             
             <h5>Message Component</h5>
             <p>Message component is useful in cases where messages need to be displayed related to an element such as forms. It has two property, severity and text of the message.</p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-message severity="info" text="Message Content"&gt;&lt;/p-message&gt;
 &lt;p-message severity="success" text="Message Content"&gt;&lt;/p-message&gt;  
 &lt;p-message severity="warn" text="Message Content"&gt;&lt;/p-message&gt;  
@@ -181,10 +181,10 @@ import &#123;MessageService&#125; from 'primeng/api';
             <h5>Animation Configuration</h5>
             <p>Transition of the open and hide animations can be customized using the <i>showTransitionOptions</i> and <i>hideTransitionOptions</i> properties, 
                 example below disables the animations altogether.</p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-message [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" severity="info" text="PrimeNG Rocks"&gt;&lt;/p-message&gt;
 </app-code>
-            <h5>Properties</h5>
+            <h5>Properties of Messages Component</h5>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -249,6 +249,52 @@ import &#123;MessageService&#125; from 'primeng/api';
                             <td>string</td>
                             <td>200ms cubic-bezier(0.86, 0, 0.07, 1)</td>
                             <td>Transition options of the hide animation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h5>Properties of Message Component</h5>
+            <div class="doc-tablewrapper">
+                <table class="doc-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>severity</td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Severity level of the message.</td>
+                        </tr>
+                        <tr>
+                            <td>text</td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Text content.</td>
+                        </tr>
+                        <tr>
+                            <td>escape</td>
+                            <td>boolean</td>
+                            <td>true</td>
+                            <td>Whether displaying messages would be escaped or not.</td>
+                        </tr>
+                        <tr>
+                            <td>style</td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Inline style of the component.</td>
+                        </tr>
+                        <tr>
+                            <td>styleClass</td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Style class of the component.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -368,7 +414,7 @@ import &#123;MessageService&#125; from 'primeng/api';
                 <span>Edit in StackBlitz</span>
             </a>
 
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;h5&gt;Severities&lt;/h5&gt;
 &lt;p-messages [(value)]="msgs1" [enableService]="false"&gt;&lt;/p-messages&gt;
 
@@ -392,18 +438,18 @@ import &#123;MessageService&#125; from 'primeng/api';
 
 &lt;h5&gt;Inline Message&lt;/h5&gt;
 &lt;p&gt;p-message component is used to display inline messages mostly within forms.&lt;/p&gt;
-&lt;p-message severity="info" text="Message Content"&gt;&lt;/p-message&gt;
-&lt;p-message severity="success" text="Message Content"&gt;&lt;/p-message&gt;  
-&lt;p-message severity="warn" text="Message Content"&gt;&lt;/p-message&gt;  
+&lt;p-message severity="info" text="Message Content" styleClass="p-mr-2"&gt;&lt;/p-message&gt;
+&lt;p-message severity="success" text="Message Content" styleClass="p-mr-2"&gt;&lt;/p-message&gt;  
+&lt;p-message severity="warn" text="Message Content" styleClass="p-mr-2"&gt;&lt;/p-message&gt;  
 &lt;p-message severity="error" text="Message Content"&gt;&lt;/p-message&gt;
 
 &lt;div class="p-mt-4"&gt;
-    &lt;input type="text" pInputText placeholder="Username" class="ng-dirty ng-invalid p-invalid"&gt;
+    &lt;input type="text" pInputText placeholder="Username" class="ng-dirty ng-invalid p-mr-2"&gt;
     &lt;p-message severity="error" text="Field is required"&gt;&lt;/p-message&gt;
 &lt;/div&gt;
 
 &lt;div class="p-mt-4"&gt;
-    &lt;input type="text" pInputText placeholder="Email" class="ng-dirty ng-invalid p-invalid"&gt;
+    &lt;input type="text" pInputText placeholder="Email" class="ng-dirty ng-invalid p-mr-2"&gt;
     &lt;p-message severity="error"&gt;&lt;/p-message&gt;
 &lt;/div&gt;
 
@@ -415,7 +461,7 @@ import &#123;MessageService&#125; from 'primeng/api';
 &lt;/div&gt;
 </app-code>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
     import &#123;Component, OnInit&#125; from '@angular/core';
     import &#123;Message,MessageService&#125; from 'primeng/api';
     
@@ -426,17 +472,18 @@ import &#123;MessageService&#125; from 'primeng/api';
     export class MessagesDemo implements OnInit &#123;
     
         msgs1: Message[];
-    
+
         msgs2: Message[];
         
         constructor(private messageService: MessageService) &#123;&#125;
-    
+
         ngOnInit() &#123;
             this.msgs1 = [
                 &#123;severity:'success', summary:'Success', detail:'Message Content'&#125;,
                 &#123;severity:'info', summary:'Info', detail:'Message Content'&#125;,
                 &#123;severity:'warn', summary:'Warning', detail:'Message Content'&#125;,
-                &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;
+                &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;,
+                &#123;severity:'custom', summary:'Custom', detail:'Message Content', icon: 'pi-file'&#125;
             ];
         &#125;
         
@@ -448,15 +495,28 @@ import &#123;MessageService&#125; from 'primeng/api';
                 &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;
             ];
         &#125;
-    
+
         clearMessages() &#123;
             this.msgs2 = [];
         &#125;
-    
+
         showViaService() &#123;
             this.messageService.add(&#123;severity:'success', summary:'Service Message', detail:'Via MessageService'&#125;);
         &#125;
     &#125;
+</app-code>
+
+<app-code lang="css" ngNonBindable ngPreserveWhitespaces>
+:host ::ng-deep .p-message-custom &#123;
+    background-color: #E1CFE7;
+    border: solid #8A427A;
+    border-width: 0 0 0 6px;
+    color: #2c1e30;
+&#125;
+
+:host ::ng-deep .p-message-close-icon &#123;
+    color: #2c1e30;
+&#125;
 </app-code>
         </p-tabPanel>
         <p-tabPanel header="StackBlitz">

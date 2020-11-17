@@ -77,6 +77,10 @@ export class AccordionTab implements AfterContentInit,OnDestroy {
         this._selected = val;
         
         if (!this.loaded) {
+            if (this._selected && this.cache) {
+                this.loaded = true;
+            }
+
             this.changeDetector.markForCheck();
         }
     }
@@ -103,7 +107,7 @@ export class AccordionTab implements AfterContentInit,OnDestroy {
                 break;
 
                 case 'header':
-                    this.header = item.template;
+                    this.headerTemplate = item.template;
                 break;
                 
                 default:
@@ -144,8 +148,6 @@ export class AccordionTab implements AfterContentInit,OnDestroy {
 
         event.preventDefault();
     }
-
-
 
     findTabIndex() {
         let index = -1;
@@ -218,13 +220,13 @@ export class Accordion implements BlockableUI, AfterContentInit, OnDestroy {
 
         this.tabListSubscription = this.tabList.changes.subscribe(_ => {
             this.initTabs();
-            this.changeDetector.markForCheck();
         });
     }
 
     initTabs(): any {
         this.tabs = this.tabList.toArray();
         this.updateSelectionState();
+        this.changeDetector.markForCheck();
     }
       
     getBlockableElement(): HTMLElement {
@@ -254,6 +256,7 @@ export class Accordion implements BlockableUI, AfterContentInit, OnDestroy {
                 if (changed) {
                     this.tabs[i].selected = selected;
                     this.tabs[i].selectedChange.emit(selected);
+                    this.tabs[i].changeDetector.markForCheck();
                 }
             }
         }

@@ -13,7 +13,7 @@ import {RippleModule} from 'primeng/ripple';
                 <div *ngFor="let msg of value; let i=index" [ngClass]="'p-message p-message-' + msg.severity" role="alert" 
                     [@messageAnimation]="{value: 'visible', params: {showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions}}">
                     <div class="p-message-wrapper">
-                        <span class="p-message-icon pi" [ngClass]="{'pi-info-circle': msg.severity === 'info', 
+                       <span [class]="'p-message-icon pi' + (msg.icon ? ' ' + msg.icon : '')" [ngClass]="{'pi-info-circle': msg.severity === 'info', 
                             'pi-check': msg.severity === 'success',
                             'pi-exclamation-triangle': msg.severity === 'warn',
                             'pi-times-circle': msg.severity === 'error'}"></span>
@@ -47,7 +47,7 @@ import {RippleModule} from 'primeng/ripple';
                 animate('{{showTransitionParams}}')
             ]),
             transition(':leave', [
-                animate('{{hideTransitionParams}}', style({ height:0, margin: 0, overflow: 'hidden', opacity: 0 }))
+                animate('{{hideTransitionParams}}', style({ height: 0, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, overflow: 'hidden', opacity: 0 }))
             ])
         ])
     ],

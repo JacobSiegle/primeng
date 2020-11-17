@@ -11,7 +11,7 @@
         <p-progressSpinner></p-progressSpinner>
     
         <h5>Custom</h5>
-        <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
+        <p-progressSpinner [style]="{width: '50px', height: '50px'}" styleClass="custom-spinner" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
     </div>
 </div>
 
@@ -19,20 +19,20 @@
     <p-tabView>
         <p-tabPanel header="Documentation">
             <h5>Import</h5>
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 import &#123;ProgressSpinnerModule&#125; from 'primeng/progressspinner';
 </app-code>
 
             <h5>Getting Started</h5>
             <p>ProgressSpinner is defined using p-progressSpinner element.</p>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-progressSpinner&gt;&lt;/p-progressSpinner&gt;
 </app-code>
             <h5>Colors</h5>
             <p>Colors of the spinner can be changed by overriding the keyframes animation</p>
 
-<app-code lang="css" ngNonBindable>
-@keyframes ui-progress-spinner-color &#123;
+<app-code lang="css" ngNonBindable ngPreserveWhitespaces>
+@keyframes p-progress-spinner-color &#123;
     100%,
     0% &#123;
         stroke: #d62d20;
@@ -124,12 +124,49 @@ import &#123;ProgressSpinnerModule&#125; from 'primeng/progressspinner';
             <a href="https://stackblitz.com/edit/primeng-progressspinner-demo" class="btn-viewsource" style="margin-left: .5em;" target="_blank">
                 <span>Edit in StackBlitz</span>
             </a>
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;h5&gt;Basic&lt;/h5&gt;
 &lt;p-progressSpinner&gt;&lt;/p-progressSpinner&gt;
 
 &lt;h5&gt;Custom&lt;/h5&gt;
-&lt;p-progressSpinner [style]="&#123;width: '50px', height: '50px'&#125;" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"&gt;&lt;/p-progressSpinner&gt;
+&lt;p-progressSpinner [style]="&#123;width: '50px', height: '50px'&#125;" styleClass="custom-spinner" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"&gt;&lt;/p-progressSpinner&gt;
+</app-code>
+<app-code lang="css" ngNonBindable ngPreserveWhitespaces>
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle &#123;
+    animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
+&#125;
+
+@keyframes custom-progress-spinner-color &#123;
+    100%,
+    0% &#123;
+        stroke: #16697A;
+    &#125;
+    40% &#123;
+        stroke: #489FB5;
+    &#125;
+    66% &#123;
+        stroke: #82C0CC;
+    &#125;
+    80%,
+    90% &#123;
+        stroke: #FFA62B;
+    &#125;
+&#125;
+
+@keyframes custom-progress-spinner-dash &#123;
+    0% &#123;
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    &#125;
+    50% &#123;
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    &#125;
+    100% &#123;
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    &#125;
+&#125;
 </app-code>
         </p-tabPanel>
         <p-tabPanel header="StackBlitz">

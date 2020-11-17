@@ -3,9 +3,9 @@ import {CommonModule} from '@angular/common';
 import {trigger,style,transition,animate,AnimationEvent} from '@angular/animations';
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
-import {RippleModule} from 'primeng/ripple';  
+import {RippleModule} from 'primeng/ripple';
 import {SharedModule,PrimeTemplate} from 'primeng/api';
-import {DomHandler} from 'primeng/dom';
+import {DomHandler, ConnectedOverlayScrollHandler} from 'primeng/dom';
 import {ObjectUtils, UniqueComponentId} from 'primeng/utils';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
@@ -18,7 +18,7 @@ export const AUTOCOMPLETE_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'p-autoComplete',
     template: `
-        <span [ngClass]="{'p-autocomplete p-component':true,'p-autocomplete-dd':dropdown,'p-autocomplete-multiple':multiple}" [ngStyle]="style" [class]="styleClass">
+        <span #container [ngClass]="{'p-autocomplete p-component':true,'p-autocomplete-dd':dropdown,'p-autocomplete-multiple':multiple}" [ngStyle]="style" [class]="styleClass">
             <input *ngIf="!multiple" #in [attr.type]="type" [attr.id]="inputId" [ngStyle]="inputStyle" [class]="inputStyleClass" [autocomplete]="autocomplete" [attr.required]="required" [attr.name]="name"
             class="p-autocomplete-input p-inputtext p-component" [ngClass]="{'p-autocomplete-dd-input':dropdown,'p-disabled': disabled}" [value]="inputFieldValue" aria-autocomplete="list" [attr.aria-controls]="listId" role="searchbox" [attr.aria-expanded]="overlayVisible" aria-haspopup="true" [attr.aria-activedescendant]="'p-highlighted-option'"
             (click)="onInputClick($event)" (input)="onInput($event)" (keydown)="onKeydown($event)" (keyup)="onKeyup($event)" [attr.autofocus]="autofocus" (focus)="onInputFocus($event)" (blur)="onInputBlur($event)" (change)="onInputChange($event)" (paste)="onInputPaste($event)"
@@ -81,7 +81,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
     @Input() panelStyle: any;
 
     @Input() styleClass: string;
-    
+
     @Input() panelStyleClass: string;
 
     @Input() inputStyle: any;
@@ -113,7 +113,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
     @Input() type: string = 'text';
 
     @Input() autoZIndex: boolean = true;
-    
+
     @Input() baseZIndex: number = 0;
 
     @Input() ariaLabel: string;
@@ -170,6 +170,8 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
 
     @Input() autocomplete: string = 'off';
 
+    @ViewChild('container') containerEL: ElementRef;
+
     @ViewChild('in') inputEL: ElementRef;
 
     @ViewChild('multiIn') multiInputEL: ElementRef;
@@ -222,12 +224,14 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
 
     loading: boolean;
 
+    scrollHandler: any;
+
     documentResizeListener: any;
 
     forceSelectionUpdateModelTimeout: any;
 
     listId: string;
-    
+
     itemClicked: boolean;
 
     constructor(public el: ElementRef, public renderer: Renderer2, public cd: ChangeDetectorRef, public differs: IterableDiffers) {
@@ -291,7 +295,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
                     this.hide();
                 }
             }
-    
+
             this.loading = false;
         }
     }
@@ -318,6 +322,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
         this.value = value;
         this.filled = this.value && this.value != '';
         this.updateInputField();
+        this.cd.markForCheck();
     }
 
     registerOnChange(fn: Function): void {
@@ -330,6 +335,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
 
     setDisabledState(val: boolean): void {
         this.disabled = val;
+        this.cd.markForCheck();
     }
 
     onInput(event: Event) {
@@ -417,8 +423,10 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
 
     show() {
         if (this.multiInputEL || this.inputEL) {
-            let hasFocus = this.multiple ? document.activeElement == this.multiInputEL.nativeElement : document.activeElement == this.inputEL.nativeElement ;
-            
+            let hasFocus = this.multiple ?
+                this.multiInputEL.nativeElement.ownerDocument.activeElement == this.multiInputEL.nativeElement :
+                this.inputEL.nativeElement.ownerDocument.activeElement == this.inputEL.nativeElement ;
+
             if (!this.overlayVisible && hasFocus) {
                 this.overlayVisible = true;
             }
@@ -436,6 +444,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
                 this.alignOverlay();
                 this.bindDocumentClickListener();
                 this.bindDocumentResizeListener();
+                this.bindScrollListener();
                 this.onShow.emit(event);
             break;
 
@@ -707,7 +716,9 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
 
     bindDocumentClickListener() {
         if (!this.documentClickListener) {
-            this.documentClickListener = this.renderer.listen('document', 'click', (event) => {
+            const documentTarget: any = this.el ? this.el.nativeElement.ownerDocument : 'document';
+
+            this.documentClickListener = this.renderer.listen(documentTarget, 'click', (event) => {
                 if (event.which === 3) {
                     return;
                 }
@@ -743,7 +754,7 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
         this.documentResizeListener = this.onWindowResize.bind(this);
         window.addEventListener('resize', this.documentResizeListener);
     }
-    
+
     unbindDocumentResizeListener() {
         if (this.documentResizeListener) {
             window.removeEventListener('resize', this.documentResizeListener);
@@ -755,9 +766,28 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
         this.hide();
     }
 
+    bindScrollListener() {
+        if (!this.scrollHandler) {
+            this.scrollHandler = new ConnectedOverlayScrollHandler(this.containerEL.nativeElement, () => {
+                if (this.overlayVisible) {
+                    this.hide();
+                }
+            });
+        }
+
+        this.scrollHandler.bindScrollListener();
+    }
+
+    unbindScrollListener() {
+        if (this.scrollHandler) {
+            this.scrollHandler.unbindScrollListener();
+        }
+    }
+
     onOverlayHide() {
         this.unbindDocumentClickListener();
         this.unbindDocumentResizeListener();
+        this.unbindScrollListener();
         this.overlay = null;
         this.onHide.emit();
     }
@@ -766,6 +796,11 @@ export class AutoComplete implements AfterViewChecked,AfterContentInit,OnDestroy
         if (this.forceSelectionUpdateModelTimeout) {
             clearTimeout(this.forceSelectionUpdateModelTimeout);
             this.forceSelectionUpdateModelTimeout = null;
+        }
+
+        if (this.scrollHandler) {
+            this.scrollHandler.destroy();
+            this.scrollHandler = null;
         }
         this.restoreOverlayAppend();
         this.onOverlayHide();

@@ -19,13 +19,13 @@ export const SLIDER_VALUE_ACCESSOR: any = {
             <span *ngIf="range && orientation == 'vertical'" class="p-slider-range" [ngStyle]="{'bottom':handleValues[0] + '%',height: (handleValues[1] - handleValues[0] + '%')}"></span>
             <span *ngIf="!range && orientation=='vertical'" class="p-slider-range" [ngStyle]="{'height': handleValue + '%'}"></span>
             <span *ngIf="!range && orientation=='horizontal'" class="p-slider-range" [ngStyle]="{'width': handleValue + '%'}"></span>
-            <span #sliderHandle *ngIf="!range" [attr.tabindex]="tabindex" (keydown)="onHandleKeydown($event)" class="p-slider-handle" (mousedown)="onMouseDown($event)" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)"
+            <span #sliderHandle *ngIf="!range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event)" class="p-slider-handle" (mousedown)="onMouseDown($event)" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)"
                 [style.transition]="dragging ? 'none': null" [ngStyle]="{'left': orientation == 'horizontal' ? handleValue + '%' : null,'bottom': orientation == 'vertical' ? handleValue + '%' : null}"
                 [attr.aria-valuemin]="min" [attr.aria-valuenow]="value" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
-            <span #sliderHandleStart *ngIf="range" [attr.tabindex]="tabindex" (keydown)="onHandleKeydown($event,0)" (mousedown)="onMouseDown($event,0)" (touchstart)="onTouchStart($event,0)" (touchmove)="onTouchMove($event,0)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle" 
+            <span #sliderHandleStart *ngIf="range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event,0)" (mousedown)="onMouseDown($event,0)" (touchstart)="onTouchStart($event,0)" (touchmove)="onTouchMove($event,0)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle" 
                 [ngStyle]="{'left': rangeStartLeft, 'bottom': rangeStartBottom}" [ngClass]="{'p-slider-handle-active':handleIndex==0}"
                 [attr.aria-valuemin]="min" [attr.aria-valuenow]="value ? value[0] : null" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
-            <span #sliderHandleEnd *ngIf="range" [attr.tabindex]="tabindex" (keydown)="onHandleKeydown($event,1)" (mousedown)="onMouseDown($event,1)" (touchstart)="onTouchStart($event,1)" (touchmove)="onTouchMove($event,1)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle" 
+            <span #sliderHandleEnd *ngIf="range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event,1)" (mousedown)="onMouseDown($event,1)" (touchstart)="onTouchStart($event,1)" (touchmove)="onTouchMove($event,1)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle" 
                 [ngStyle]="{'left': rangeEndLeft, 'bottom': rangeEndBottom}" [ngClass]="{'p-slider-handle-active':handleIndex==1}"
                 [attr.aria-valuemin]="min" [attr.aria-valuenow]="value ? value[1] : null" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
         </div>
@@ -204,6 +204,9 @@ export class Slider implements OnDestroy,ControlValueAccessor {
     }
 
     onHandleKeydown(event, handleIndex?:number) {
+        if (this.disabled) {
+            return;
+        }
         if (event.which == 38 || event.which == 39) {
             this.spin(event, 1, handleIndex);
         }
@@ -235,8 +238,10 @@ export class Slider implements OnDestroy,ControlValueAccessor {
     
     bindDragListeners() {
         this.ngZone.runOutsideAngular(() => {
+            const documentTarget: any = this.el ? this.el.nativeElement.ownerDocument : 'document';
+
             if (!this.dragListener) {
-                this.dragListener = this.renderer.listen('document', 'mousemove', (event) => {
+                this.dragListener = this.renderer.listen(documentTarget, 'mousemove', (event) => {
                     if (this.dragging) {
                         this.ngZone.run(() => {
                             this.handleChange(event);
@@ -246,7 +251,7 @@ export class Slider implements OnDestroy,ControlValueAccessor {
             }
 
             if (!this.mouseupListener) {
-                this.mouseupListener = this.renderer.listen('document', 'mouseup', (event) => {
+                this.mouseupListener = this.renderer.listen(documentTarget, 'mouseup', (event) => {
                     if (this.dragging) {
                         this.dragging = false;
                         this.ngZone.run(() => {
@@ -296,6 +301,8 @@ export class Slider implements OnDestroy,ControlValueAccessor {
                 this.updateValue(newValue, event);
             }         
         }
+
+        this.cd.markForCheck();
     }
     
     handleStepChange(newValue: number, oldValue: number) {
@@ -333,6 +340,7 @@ export class Slider implements OnDestroy,ControlValueAccessor {
     
     setDisabledState(val: boolean): void {
         this.disabled = val;
+        this.cd.markForCheck();
     }
     
     get rangeStartLeft() {

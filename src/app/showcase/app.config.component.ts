@@ -43,7 +43,7 @@ import { Subscription } from 'rxjs';
                             </div>
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'bootstrap4-light-purple', false)">
-                                    <img src="assets/showcase/images/themes/bootstrap4-light-purple.svg" alt="Bootstrap Light Blue" />
+                                    <img src="assets/showcase/images/themes/bootstrap4-light-purple.svg" alt="Bootstrap Light Purple" />
                                 </button>
                                 <span>Purple</span>
                             </div>
@@ -55,7 +55,7 @@ import { Subscription } from 'rxjs';
                             </div>
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'bootstrap4-dark-purple', true)">
-                                    <img src="assets/showcase/images/themes/bootstrap4-dark-purple.svg" alt="Bootstrap Dark Blue" />
+                                    <img src="assets/showcase/images/themes/bootstrap4-dark-purple.svg" alt="Bootstrap Dark Purple" />
                                 </button>
                                 <span>Purple</span>
                             </div>
@@ -114,6 +114,16 @@ import { Subscription } from 'rxjs';
                                     <img src="assets/showcase/images/themes/md-dark-deeppurple.svg" alt="Material Compact Dark Deep Purple" />
                                 </button>
                                 <span>Deep Purple</span>
+                            </div>
+                        </div>
+
+                        <h5>Fluent UI</h5>
+                        <div class="p-grid free-themes">
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'fluent-light', false)">
+                                    <img src="assets/showcase/images/themes/fluent-light.png" alt="Fluent Light"/>
+                                </button>
+                                <span>Light</span>
                             </div>
                         </div>
 
@@ -193,7 +203,37 @@ import { Subscription } from 'rxjs';
                             </div>
                         </div>
 
-                        <h5>Legacy</h5>
+                        <h4>Premium Themes</h4>
+                        <p>Premium themes are only available exclusively for <a href="https://www.primefaces.org/designer/primeng">PrimeNG Theme Designer</a> subscribers and therefore not included in PrimeNG core.</p>
+
+                        <div class="p-grid free-themes">
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'soho-light', false)">
+                                    <img src="assets/showcase/images/themes/soho-light.png" alt="Soho Light"/>
+                                </button>
+                                <span>Soho Light</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'soho-dark', true)">
+                                <img src="assets/showcase/images/themes/soho-dark.png" alt="Soho Dark"/>
+                                </button>
+                                <span>Soho Dark</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'mira', false)">
+                                    <img src="assets/showcase/images/themes/mira.jpg" alt="Mira"/>
+                                </button>
+                                <span>Mira</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'nano', false)">
+                                    <img src="assets/showcase/images/themes/nano.jpg" alt="Nano"/>
+                                </button>
+                                <span>Nano</span>
+                            </div>
+                        </div>
+
+                        <h4>Legacy Free Themes</h4>
                         <div class="p-grid free-themes">
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'nova', false)">
@@ -249,6 +289,11 @@ import { Subscription } from 'rxjs';
                         <h4>Premium Angular-CLI Templates</h4>
                         <p>Beautifully crafted premium <a href="https://cli.angular.io/">Angular CLI</a> application templates by the PrimeTek design team.</p>
                         <div class="p-grid premium-themes">
+                            <div class="p-col-12 p-md-4">
+                                <a href="https://www.primefaces.org/layouts/diamond-ng">
+                                    <img alt="Diamond" src="assets/showcase/images/layouts/diamond-ng.jpg">
+                                </a>
+                            </div>
                             <div class="p-col-12 p-md-4">
                                 <a href="https://www.primefaces.org/layouts/mirage-ng">
                                     <img alt="Mirage" src="assets/showcase/images/layouts/mirage-ng.jpg">
@@ -366,7 +411,7 @@ export class AppConfigComponent implements OnInit, OnDestroy {
     active: boolean;
 
     scale: number = 14;;
-    
+
     scales: number[] = [12,13,14,15,16];
 
     outsideClickListener: any;
@@ -379,7 +424,15 @@ export class AppConfigComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.config = this.configService.config;
-        this.subscription = this.configService.configUpdate$.subscribe(config => this.config = config);
+        this.subscription = this.configService.configUpdate$.subscribe(config => {
+            this.config = config;
+            if (this.config.theme === 'nano')
+                this.scale = 12;
+            else
+                this.scale = 14;
+
+            this.applyScale();
+        });
 
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -439,11 +492,15 @@ export class AppConfigComponent implements OnInit, OnDestroy {
 
     decrementScale() {
         this.scale--;
-        document.documentElement.style.fontSize = this.scale + 'px';
+        this.applyScale();
     }
 
     incrementScale() {
         this.scale++;
+        this.applyScale();
+    }
+
+    applyScale() {
         document.documentElement.style.fontSize = this.scale + 'px';
     }
 
@@ -452,5 +509,5 @@ export class AppConfigComponent implements OnInit, OnDestroy {
             this.subscription.unsubscribe();
         }
     }
-    
+
 }

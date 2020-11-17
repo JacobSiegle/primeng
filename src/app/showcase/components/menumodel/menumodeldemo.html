@@ -10,17 +10,17 @@
     <p>Core of the api is MenuItem class that defines various options such as the label, icon and children of an item in a menu. Example below
     is a sample configuration with Menu component.</p>
 
-<app-code lang="markup" ngNonBindable>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-menu [model]="items"&gt;&lt;/p-menu&gt;
 </app-code>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 import &#123;MenuModule&#125; from 'primeng/menu';
 import &#123;MenuItem&#125; from 'primeng/api';
 import &#123;MegaMenuItem&#125; from 'primeng/api';  //required when using MegaMenu
 </app-code>
 
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 export class MenuDemo &#123;
 
     private items: MenuItem[];
@@ -178,6 +178,12 @@ export class MenuDemo &#123;
                     <td>Specifies where to open the linked document.</td>
                 </tr>
                 <tr>
+                    <td>escape</td>
+                    <td>boolean</td>
+                    <td>true</td>
+                    <td>Whether to escape the label or not. Set to false to display html content.</td>
+                </tr>
+                <tr>
                     <td>separator</td>
                     <td>boolean</td>
                     <td>false</td>
@@ -231,7 +237,7 @@ export class MenuDemo &#123;
 
     <h4>Command</h4>
     <p>The function to invoke when an item is clicked is defined using the <i>command</i> property.</p>
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 export class MenuDemo &#123;
 
     private items: MenuItem[];
@@ -251,9 +257,9 @@ export class MenuDemo &#123;
 </app-code>
 
     <h4>Navigation</h4>
-    <p>Navigation is specified using url property for external links and with <i>routerLink</i> for internal ones. If a menuitem has an active route, <i>ui-state-active</i> style class is added as an indicator. Active route link can be
+    <p>Navigation is specified using url property for external links and with <i>routerLink</i> for internal ones. If a menuitem has an active route, <i>p-menuitem-link-active</i> style class is added as an indicator. Active route link can be
     configured with <i>routerLinkActiveOptions</i> property of MenuItem API.</p>
-<app-code lang="typescript" ngNonBindable>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
 export class MenuDemo &#123;
 
     private items: MenuItem[];
@@ -266,6 +272,23 @@ export class MenuDemo &#123;
                 &#123;label: 'Open', icon: 'pi pi-download', routerLink: ['/pagename']&#125;
                 &#123;label: 'Recent Files', icon: 'pi pi-download', routerLink: ['/pagename'], queryParams: &#123;'recent': 'true'&#125;&#125;
             ]
+        &#125;
+    &#125;
+&#125;
+</app-code>
+
+    <h4>Custom Content</h4>
+    <p>Label of a menuitem both supports simple strings and html values as well. By default, html values are escaped, use <i>escape</i> property to allow html.</p>
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
+export class MenuDemo &#123;
+
+    private items: MenuItem[];
+
+    ngOnInit() &#123;
+        this.items = [&#123;
+            label: '&lt;h2&gt;File&lt;/h2&gt;',
+            escape: false,
+            //...
         &#125;
     &#125;
 &#125;
